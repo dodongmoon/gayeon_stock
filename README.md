@@ -11,6 +11,12 @@ npm start
 
 브라우저에서 `http://localhost:3000` 접속
 
+## 배포 (Render 원클릭)
+
+아래 링크로 바로 배포할 수 있습니다.
+
+- [Render Deploy](https://render.com/deploy?repo=https://github.com/dodongmoon/gayeon_stock)
+
 ## 기본 매수 정보
 
 - 삼성전자: 169,100원 x 1주

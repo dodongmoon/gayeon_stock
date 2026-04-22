@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: gayeon-stock
+    runtime: node
+    plan: free
+    autoDeploy: true
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
