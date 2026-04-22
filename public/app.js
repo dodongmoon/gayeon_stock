@@ -51,6 +51,32 @@ function setStatus(text, className) {
   badge.className = `status ${className}`;
 }
 
+function renderTimestamps(quotes) {
+  const fetchedAtEl = document.getElementById("fetchedAt");
+  if (fetchedAtEl) {
+    fetchedAtEl.textContent = new Date().toLocaleString("ko-KR");
+  }
+
+  const regularAtEl = document.getElementById("regularAt");
+  const afterHoursAtEl = document.getElementById("afterHoursAt");
+  if (!regularAtEl || !afterHoursAtEl) {
+    return;
+  }
+
+  const regularAt = quotes?.regularUpdatedAt || quotes?.updatedAt || null;
+  const afterHoursAt = quotes?.afterHoursUpdatedAt || null;
+
+  const regularDate = regularAt ? new Date(regularAt) : null;
+  regularAtEl.textContent =
+    regularDate && !Number.isNaN(regularDate.valueOf()) ? regularDate.toLocaleString("ko-KR") : "-";
+
+  const afterHoursDate = afterHoursAt ? new Date(afterHoursAt) : null;
+  afterHoursAtEl.textContent =
+    afterHoursDate && !Number.isNaN(afterHoursDate.valueOf())
+      ? afterHoursDate.toLocaleString("ko-KR")
+      : "-";
+}
+
 function formatDateShort(dateString) {
   const date = new Date(`${dateString}T00:00:00+09:00`);
   return date.toLocaleDateString("ko-KR");
@@ -323,7 +349,8 @@ async function initialize() {
       fetchJson("/api/quotes"),
     ]);
     state.latestPositions = quotes.positions;
-    state.lastTradingDate = String(quotes.updatedAt).slice(0, 10);
+    const regularBaseAt = quotes.regularUpdatedAt || quotes.updatedAt;
+    state.lastTradingDate = String(regularBaseAt).slice(0, 10);
 
     renderChartTitles(purchaseDate);
     prepareInstrumentCharts(history.series);
@@ -333,9 +360,7 @@ async function initialize() {
 
     renderRows(quotes.positions);
     renderSummary(quotes.summary);
-    document.getElementById("updatedAt").textContent = new Date(quotes.updatedAt).toLocaleString(
-      "ko-KR"
-    );
+    renderTimestamps(quotes);
     setStatus("실시간 연결됨", "ok");
   } catch (error) {
     console.error(error);
@@ -349,11 +374,10 @@ async function refreshQuotes() {
     state.latestPositions = quotes.positions;
     renderRows(quotes.positions);
     renderSummary(quotes.summary);
-    document.getElementById("updatedAt").textContent = new Date(quotes.updatedAt).toLocaleString(
-      "ko-KR"
-    );
+    renderTimestamps(quotes);
 
-    const nextTradingDate = String(quotes.updatedAt).slice(0, 10);
+    const regularBaseAt = quotes.regularUpdatedAt || quotes.updatedAt;
+    const nextTradingDate = String(regularBaseAt).slice(0, 10);
     if (state.lastTradingDate && state.lastTradingDate !== nextTradingDate) {
       state.lastTradingDate = nextTradingDate;
       await refreshHistoryCharts();

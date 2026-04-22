@@ -57,11 +57,13 @@ async function fetchWithTimeout(url) {
 
 async function fetchBasicQuote(code) {
   const data = await fetchWithTimeout(`${NAVER_BASE_URL}/api/stock/${code}/basic`);
+  const overMarketInfo = data.overMarketPriceInfo || null;
   return {
     code: data.itemCode,
     name: data.stockName,
     marketStatus: data.marketStatus,
-    localTradedAt: data.localTradedAt,
+    regularTradedAt: data.localTradedAt,
+    afterHoursTradedAt: overMarketInfo?.localTradedAt ?? null,
     currentPrice: parseKoreanNumber(data.closePrice),
     dayChange: parseKoreanNumber(data.compareToPreviousClosePrice),
     dayChangeRate: Number(data.fluctuationsRatio),
@@ -118,7 +120,8 @@ function computeInvested() {
 async function buildQuotePayload() {
   const quotes = await Promise.all(HOLDINGS.map((holding) => fetchBasicQuote(holding.code)));
 
-  let newestTimestamp = null;
+  let newestRegularTimestamp = null;
+  let newestAfterHoursTimestamp = null;
   const positions = HOLDINGS.map((holding) => {
     const quote = quotes.find((item) => item.code === holding.code);
     const currentPrice = quote?.currentPrice ?? 0;
@@ -127,11 +130,20 @@ async function buildQuotePayload() {
     const pnl = valuation - invested;
     const pnlRate = invested === 0 ? 0 : (pnl / invested) * 100;
 
-    if (quote?.localTradedAt) {
-      const timestamp = new Date(quote.localTradedAt);
+    if (quote?.regularTradedAt) {
+      const timestamp = new Date(quote.regularTradedAt);
       if (!Number.isNaN(timestamp.valueOf())) {
-        if (!newestTimestamp || timestamp > newestTimestamp) {
-          newestTimestamp = timestamp;
+        if (!newestRegularTimestamp || timestamp > newestRegularTimestamp) {
+          newestRegularTimestamp = timestamp;
+        }
+      }
+    }
+
+    if (quote?.afterHoursTradedAt) {
+      const timestamp = new Date(quote.afterHoursTradedAt);
+      if (!Number.isNaN(timestamp.valueOf())) {
+        if (!newestAfterHoursTimestamp || timestamp > newestAfterHoursTimestamp) {
+          newestAfterHoursTimestamp = timestamp;
         }
       }
     }
@@ -144,7 +156,8 @@ async function buildQuotePayload() {
       pnl,
       pnlRate,
       marketStatus: quote?.marketStatus ?? "UNKNOWN",
-      localTradedAt: quote?.localTradedAt ?? null,
+      localTradedAt: quote?.regularTradedAt ?? null,
+      afterHoursLocalTradedAt: quote?.afterHoursTradedAt ?? null,
       dayChange: quote?.dayChange ?? 0,
       dayChangeRate: quote?.dayChangeRate ?? 0,
     };
@@ -154,9 +167,17 @@ async function buildQuotePayload() {
   const totalValuation = positions.reduce((sum, pos) => sum + pos.valuation, 0);
   const totalPnl = totalValuation - totalInvested;
   const totalPnlRate = totalInvested === 0 ? 0 : (totalPnl / totalInvested) * 100;
+  const regularUpdatedAt = newestRegularTimestamp
+    ? newestRegularTimestamp.toISOString()
+    : null;
+  const afterHoursUpdatedAt = newestAfterHoursTimestamp
+    ? newestAfterHoursTimestamp.toISOString()
+    : null;
 
   return {
-    updatedAt: newestTimestamp ? newestTimestamp.toISOString() : new Date().toISOString(),
+    updatedAt: regularUpdatedAt || new Date().toISOString(),
+    regularUpdatedAt,
+    afterHoursUpdatedAt,
     positions,
     summary: {
       totalInvested,

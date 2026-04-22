@@ -55,6 +55,10 @@ body {
   flex-wrap: wrap;
 }
 
+.meta-sep {
+  color: #98a2b3;
+}
+
 .status {
   display: inline-block;
   border-radius: 999px;
