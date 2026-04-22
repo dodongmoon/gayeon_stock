@@ -1,0 +1,166 @@
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #101828;
+  --muted: #667085;
+  --line: #e5e7eb;
+  --up: #b42318;
+  --down: #175cd3;
+  --ok: #067647;
+  --warn: #b54708;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top left, #eef4ff 0%, var(--bg) 60%);
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.hero {
+  background: linear-gradient(135deg, #fff 0%, #eaf2ff 100%);
+  border: 1px solid #d4deee;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.brand-red {
+  color: #d92d20;
+}
+
+.hero p {
+  margin: 4px 0;
+  color: var(--muted);
+}
+
+.meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f2f4f7;
+  color: #344054;
+}
+
+.status.ok {
+  background: #e7f8f0;
+  color: var(--ok);
+}
+
+.status.pending {
+  background: #fff4e5;
+  color: var(--warn);
+}
+
+.status.error {
+  background: #fee4e2;
+  color: #b42318;
+}
+
+.summary-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.card strong {
+  font-size: 24px;
+}
+
+.table-wrap {
+  margin-top: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 12px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.chart-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 12px;
+}
+
+.chart-card {
+  height: 360px;
+}
+
+.up {
+  color: var(--up);
+}
+
+.down {
+  color: var(--down);
+}
+
+@media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>실시간 주식 손익 대시보드</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <main class="container">
+      <section class="hero">
+        <h1><span class="brand-red">돼연이</span>의 실시간 주식 손익 대시보드</h1>
+        <p class="meta">
+          마지막 갱신:
+          <span id="updatedAt">-</span>
+          <span id="statusBadge" class="status">연결 중...</span>
+        </p>
+      </section>
+
+      <section class="summary-grid">
+        <article class="card">
+          <h2>총 매수원금</h2>
+          <strong id="totalInvested">-</strong>
+        </article>
+        <article class="card">
+          <h2>총 평가금액</h2>
+          <strong id="totalValuation">-</strong>
+        </article>
+        <article class="card">
+          <h2>총 손익</h2>
+          <strong id="totalPnl">-</strong>
+        </article>
+        <article class="card">
+          <h2>손익률</h2>
+          <strong id="totalPnlRate">-</strong>
+        </article>
+      </section>
+
+      <section class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>종목</th>
+              <th>수량</th>
+              <th>평단</th>
+              <th>현재가</th>
+              <th>평가금액</th>
+              <th>손익</th>
+              <th>손익률</th>
+            </tr>
+          </thead>
+          <tbody id="positionRows"></tbody>
+        </table>
+      </section>
+
+      <section class="chart-grid">
+        <article class="card chart-card">
+          <h2 id="samsungChartTitle">삼성전자 종가 추이</h2>
+          <canvas id="samsungChart"></canvas>
+        </article>
+        <article class="card chart-card">
+          <h2 id="etfChartTitle">SOL AI반도체TOP2플러스 ETF 종가 추이</h2>
+          <canvas id="etfChart"></canvas>
+        </article>
+        <article class="card chart-card">
+          <h2 id="portfolioTrendTitle">총 자산/손익 추이 (종가 기준)</h2>
+          <canvas id="pnlChart"></canvas>
+        </article>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
