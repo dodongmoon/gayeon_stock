@@ -91,18 +91,29 @@ async function fetchJson(url) {
 }
 
 function renderSummary(summary) {
-  const pnlClass = summary.totalPnl > 0 ? "up" : summary.totalPnl < 0 ? "down" : "";
+  const unrealizedClass =
+    summary.unrealizedPnl > 0 ? "up" : summary.unrealizedPnl < 0 ? "down" : "";
+  const realizedClass = summary.realizedPnl > 0 ? "up" : summary.realizedPnl < 0 ? "down" : "";
+  const totalClass = summary.totalPnl > 0 ? "up" : summary.totalPnl < 0 ? "down" : "";
 
   document.getElementById("totalInvested").textContent = formatKRW(summary.totalInvested);
   document.getElementById("totalValuation").textContent = formatKRW(summary.totalValuation);
 
+  const unrealizedPnlEl = document.getElementById("unrealizedPnl");
+  unrealizedPnlEl.textContent = formatKRW(summary.unrealizedPnl);
+  unrealizedPnlEl.className = unrealizedClass;
+
+  const unrealizedPnlRateEl = document.getElementById("unrealizedPnlRate");
+  unrealizedPnlRateEl.textContent = formatPercent(summary.unrealizedPnlRate);
+  unrealizedPnlRateEl.className = unrealizedClass;
+
+  const realizedPnlEl = document.getElementById("realizedPnl");
+  realizedPnlEl.textContent = formatKRW(summary.realizedPnl);
+  realizedPnlEl.className = realizedClass;
+
   const totalPnlEl = document.getElementById("totalPnl");
   totalPnlEl.textContent = formatKRW(summary.totalPnl);
-  totalPnlEl.className = pnlClass;
-
-  const totalPnlRateEl = document.getElementById("totalPnlRate");
-  totalPnlRateEl.textContent = formatPercent(summary.totalPnlRate);
-  totalPnlRateEl.className = pnlClass;
+  totalPnlEl.className = totalClass;
 }
 
 function renderRows(positions) {

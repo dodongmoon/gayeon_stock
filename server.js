@@ -22,8 +22,17 @@ const HOLDINGS = [
     key: "sol_ai_top2_plus",
     name: "SOL AI반도체TOP2플러스 ETF",
     code: "0167A0",
-    quantity: 9,
+    quantity: 4,
     averagePrice: 9200,
+  },
+];
+const REALIZED_TRADES = [
+  {
+    name: "SOL AI반도체TOP2플러스 ETF",
+    code: "0167A0",
+    quantity: 5,
+    sellPrice: 18100,
+    buyPrice: 9200,
   },
 ];
 
@@ -117,6 +126,12 @@ function computeInvested() {
   );
 }
 
+function computeRealizedPnl() {
+  return REALIZED_TRADES.reduce((sum, trade) => {
+    return sum + (trade.sellPrice - trade.buyPrice) * trade.quantity;
+  }, 0);
+}
+
 async function buildQuotePayload() {
   const quotes = await Promise.all(HOLDINGS.map((holding) => fetchBasicQuote(holding.code)));
 
@@ -165,8 +180,10 @@ async function buildQuotePayload() {
 
   const totalInvested = positions.reduce((sum, pos) => sum + pos.invested, 0);
   const totalValuation = positions.reduce((sum, pos) => sum + pos.valuation, 0);
-  const totalPnl = totalValuation - totalInvested;
-  const totalPnlRate = totalInvested === 0 ? 0 : (totalPnl / totalInvested) * 100;
+  const unrealizedPnl = totalValuation - totalInvested;
+  const unrealizedPnlRate = totalInvested === 0 ? 0 : (unrealizedPnl / totalInvested) * 100;
+  const realizedPnl = computeRealizedPnl();
+  const totalPnl = unrealizedPnl + realizedPnl;
   const regularUpdatedAt = newestRegularTimestamp
     ? newestRegularTimestamp.toISOString()
     : null;
@@ -182,8 +199,10 @@ async function buildQuotePayload() {
     summary: {
       totalInvested,
       totalValuation,
+      unrealizedPnl,
+      unrealizedPnlRate,
+      realizedPnl,
       totalPnl,
-      totalPnlRate,
       startingCash: STARTING_CASH,
       cashDifference: STARTING_CASH - totalInvested,
       purchaseDate: PURCHASE_DATE,
