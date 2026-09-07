@@ -25,6 +25,13 @@ const HOLDINGS = [
     quantity: 4,
     averagePrice: 9200,
   },
+  {
+    key: "tiger_semiconductor_top10_cc_active",
+    name: "TIGER 반도체TOP10커버드콜액티브",
+    code: "0177R0",
+    quantity: 15,
+    averagePrice: 11000,
+  },
 ];
 const REALIZED_TRADES = [
   {

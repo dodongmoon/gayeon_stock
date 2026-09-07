@@ -34,6 +34,13 @@ const INSTRUMENT_CHART_META = {
     borderColor: "#f57c00",
     backgroundColor: "rgba(245, 124, 0, 0.08)",
   },
+  "0177R0": {
+    canvasId: "tigerChart",
+    titleId: "tigerChartTitle",
+    title: "TIGER 반도체TOP10커버드콜액티브 종가 추이",
+    borderColor: "#7c3aed",
+    backgroundColor: "rgba(124, 58, 237, 0.08)",
+  },
 };
 
 function formatKRW(value) {
